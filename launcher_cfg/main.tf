@@ -24,7 +24,7 @@ module "launcher_mc" {
 	instance_name_tag = "${var.admin_instance_name}"
 	instance_security_group_ids = ["${module.admin_vpc.vpc_sg_id}"]
 	instance_subnet_id = "${module.admin_vpc.vpc_subnet_ids[0]}"
-	credentials_location = "${var.my_credentials_location}"
+	source_credentials_location = "${var.my_credentials_location}"
 	use_public_ip_for_provisioning = true
 	
 }
