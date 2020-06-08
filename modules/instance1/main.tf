@@ -160,10 +160,10 @@ resource "null_resource" "checkout_tf" {
 		inline = [
 		    "cd ${var.ci_target_base_location}",
 			"git clone https://github.com/trilia/aws_stack.git",
-			"cd aws_stack/prod/compact/kubeprep",
-			"terraform init -input=false",
-			"cd aws_stack/prod/compact/kubelaunch",
-			"terraform init -input=false"
+			//"cd aws_stack/st_config/prepare",
+			//"terraform init -input=false",
+			//"cd aws_stack/st_config/launch/full_stack",
+			//"terraform init -input=false"
 		]
 
 		connection {
