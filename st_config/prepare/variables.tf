@@ -96,3 +96,7 @@ variable "use_public_ip_for_db_launcher_provisioning" {
 	type = bool
 	default = false
 }
+
+variable "src_credentials_location" {
+	default = "../../creds"
+}

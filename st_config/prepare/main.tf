@@ -71,6 +71,7 @@ module "svc_launcher_mc" {
 	instance_name_tag = "${var.service_launcher_instance_name}"
 	instance_security_group_ids = ["${module.service_vpc.vpc_sg_id}"]
 	instance_subnet_id = "${module.service_vpc.vpc_subnet_ids[0]}"
+	source_credentials_location = "${var.src_credentials_location}"
 	//use_public_ip_for_provisioning = var.use_public_ip_for_svc_launcher_provisioning
 	
 }
@@ -82,6 +83,7 @@ module "db_launcher_mc" {
 	instance_name_tag = "${var.db_launcher_instance_name}"
 	instance_security_group_ids = ["${module.db_vpc.vpc_sg_id}"]
 	instance_subnet_id = "${module.db_vpc.vpc_subnet_ids[0]}"
+	source_credentials_location = "${var.src_credentials_location}"
 	//use_public_ip_for_provisioning = use_public_ip_for_db_launcher_provisioning
 
 }
