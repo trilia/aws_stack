@@ -14,6 +14,8 @@ module "service_vpc" {
 	vpc_subnet_prefix = "${var.svc_vpc_subnet_prefix}"
 	vpc_name = "${var.svc_vpc_name}"
 	vpc_sg_name = "${var.svc_vpc_sg_name}"
+	vpc_sg_ingress = "${var.svc_vpc_sg_ingress}"
+	vpc_sg_egress = "${var.svc_vpc_sg_egress}"
 	attach_internet_gateway = true
 
 }
@@ -25,6 +27,8 @@ module "db_vpc" {
 	vpc_subnet_prefix = "${var.db_vpc_subnet_prefix}"
 	vpc_name = "${var.db_vpc_name}"
 	vpc_sg_name = "${var.db_vpc_sg_name}"
+	vpc_sg_ingress = "${var.db_vpc_sg_ingress}"
+	vpc_sg_egress = "${var.db_vpc_sg_egress}"
 	attach_internet_gateway = true
 }
 
