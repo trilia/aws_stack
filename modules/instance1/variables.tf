@@ -48,11 +48,11 @@ variable "ebs_volume_size" {
 	default = 10
 }
 
-variable "public_key_ppk_file" {
+variable "private_key_ppk_file" {
 	default = "trilia_ci.ppk"
 }
 
-variable "public_key_pem_file" {
+variable "private_key_pem_file" {
 	default = "trilia_ci.pem"
 }
 
@@ -64,15 +64,25 @@ variable "secret_key_file" {
 	default = "secret_key.txt"
 }
 
+variable "ssh_key_private" {
+	default = "trilia_ci.pem"
+}
+
+variable "ci_target_base_location" {
+	default = "/trilila_ci"
+}
+
+variable "source_credentials_location" {
+	// relative to ci_source_base_location
+	default = "../../creds"
+}
+
+variable "target_credentials_location" {
+	// relative to ci_source_base_location
+	default = "creds"
+}
+
 variable "use_public_ip_for_provisioning" {
 	type = bool
 	default = false
-}
-
-variable "credentials_location" {
-	default = "/trilia_ci/creds"
-}
-
-variable "ssh_key_private" {
-	default = "trilia_ci.pem"
 }

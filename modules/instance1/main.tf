@@ -1,7 +1,18 @@
 
 locals {
-	private_key_file = join("/", ["${var.credentials_location}", "${var.ssh_key_private}"])
-	public_key_file = join("/", ["${var.credentials_location}", "${var.public_key_ppk_file}"])
+
+	//source_creds_path = join("/", ["${var.ci_source_base_location}", "${var.source_credentials_location}"])
+	source_creds_path = "${var.source_credentials_location}"
+	target_creds_path = join("/", ["${var.ci_target_base_location}", "${var.target_credentials_location}"])
+
+	source_private_key_file_path = join("/", ["${local.source_creds_path}", "${var.ssh_key_private}"])
+	
+	source_private_key_ppk_file_path = join("/", ["${local.source_creds_path}", "${var.private_key_ppk_file}"])
+	source_private_key_pem_file_path = join("/", ["${local.source_creds_path}", "${var.private_key_pem_file}"])
+	
+	source_access_key_file_path = join("/", ["${local.source_creds_path}", "${var.access_key_file}"])
+	source_secret_key_file_path = join("/", ["${local.source_creds_path}", "${var.secret_key_file}"])
+	
 }
 
 resource "aws_instance" "trilia_ci_linux_mc_native_volume" {
@@ -35,49 +46,49 @@ resource "aws_instance" "trilia_ci_linux_mc_native_volume" {
 	user_data = "${file("${path.module}/${var.control_comp_installer}")}"
 	
 	provisioner "file" {
-		source = "${local.public_key_file}"
-		destination = "/tmp/${var.public_key_ppk_file}"
+		source = "${local.source_private_key_ppk_file_path}"
+		destination = "/tmp/${var.private_key_ppk_file}"
 
 		connection {
 		  type        = "ssh"
 		  user        = "ubuntu"
-		  private_key = "${file(local.private_key_file)}"
+		  private_key = "${file(local.source_private_key_file_path)}"
 		  host 		  = var.use_public_ip_for_provisioning == true ? "${self.public_ip}" : "${self.private_ip}"
 		}
 	}
 	
 	provisioner "file" {
-		source = "${local.public_key_file}"
-		destination = "/tmp/${var.public_key_pem_file}"
+		source = "${local.source_private_key_pem_file_path}"
+		destination = "/tmp/${var.private_key_pem_file}"
 
 		connection {
 		  type        = "ssh"
 		  user        = "ubuntu"
-		  private_key = "${file(local.private_key_file)}"
+		  private_key = "${file(local.source_private_key_file_path)}"
 		  host 		  = var.use_public_ip_for_provisioning == true ? "${self.public_ip}" : "${self.private_ip}"
 		}
 	}
 	
 	provisioner "file" {
-		source = "${local.public_key_file}"
+		source = "${local.source_access_key_file_path}"
 		destination = "/tmp/${var.access_key_file}"
 
 		connection {
 		  type        = "ssh"
 		  user        = "ubuntu"
-		  private_key = "${file(local.private_key_file)}"
+		  private_key = "${file(local.source_private_key_file_path)}"
 		  host 		  = var.use_public_ip_for_provisioning == true ? "${self.public_ip}" : "${self.private_ip}"
 		}
 	}
 	
 	provisioner "file" {
-		source = "${local.public_key_file}"
+		source = "${local.source_secret_key_file_path}"
 		destination = "/tmp/${var.secret_key_file}"
 
 		connection {
 		  type        = "ssh"
 		  user        = "ubuntu"
-		  private_key = "${file(local.private_key_file)}"
+		  private_key = "${file(local.source_private_key_file_path)}"
 		  host 		  = var.use_public_ip_for_provisioning == true ? "${self.public_ip}" : "${self.private_ip}"
 		}
 	}
@@ -85,13 +96,13 @@ resource "aws_instance" "trilia_ci_linux_mc_native_volume" {
 	provisioner "remote-exec" {
 		inline = [
 			
-			"dos2unix /tmp/${var.public_key_ppk_file}; dos2unix /tmp/${var.public_key_pem_file}; dos2unix /tmp/${var.access_key_file}; dos2unix /tmp/${var.secret_key_file};"
+			"dos2unix /tmp/${var.private_key_ppk_file}; dos2unix /tmp/${var.private_key_pem_file}; dos2unix /tmp/${var.access_key_file}; dos2unix /tmp/${var.secret_key_file};"
 		]
 		
 		connection {
 			type        = "ssh"
 			user        = "ubuntu"
-			private_key = "${file(local.private_key_file)}"
+			private_key = "${file(local.source_private_key_file_path)}"
 			host 		  = var.use_public_ip_for_provisioning == true ? "${self.public_ip}" : "${self.private_ip}"
 		}
 	}
@@ -110,28 +121,28 @@ resource "null_resource" "post_process" {
 	provisioner "remote-exec" {
 		
 		inline = [
-		    "sudo mkdir /trilia_ci",
+		    "sudo mkdir ${var.ci_target_base_location}",
 			"sudo mkfs -t ext4 /dev/xvdf",
-			"sudo mount /dev/xvdf /trilia_ci",
-			"sudo mkdir -p /trilia_ci/creds",
-			"sudo chown -R ubuntu:ubuntu /trilia_ci",
-			"sudo chmod -R 775 /trilia_ci",
-			"sudo mv /tmp/access_key.txt /trilia_ci/creds/",
-			"sudo chown ubuntu:ubuntu /trilia_ci/creds/access_key.txt",
-			"sudo mv /tmp/secret_key.txt /trilia_ci/creds/",
-			"sudo chown ubuntu:ubuntu /trilia_ci/creds/secret_key.txt",
-			"sudo mv /tmp/trilia_ci.ppk /trilia_ci/creds/",
-			"sudo chown ubuntu:ubuntu /trilia_ci/creds/trilia_ci.ppk",
-			"sudo chmod 600 /trilia_ci/creds/trilia_ci.ppk",
-			"sudo mv /tmp/trilia_ci.pem /trilia_ci/creds/",
-			"sudo chown ubuntu:ubuntu /trilia_ci/creds/trilia_ci.pem",
-			"sudo chmod 600 /trilia_ci/creds/trilia_ci.pem",
+			"sudo mount /dev/xvdf ${var.ci_target_base_location}",
+			"sudo mkdir -p ${local.target_creds_path}",
+			"sudo chown -R ubuntu:ubuntu ${var.ci_target_base_location}",
+			"sudo chmod -R 775 ${var.ci_target_base_location}",
+			"sudo mv /tmp/${var.access_key_file} ${local.target_creds_path}",
+			"sudo chown ubuntu:ubuntu ${local.target_creds_path}/${var.access_key_file}",
+			"sudo mv /tmp/${var.secret_key_file} ${local.target_creds_path}",
+			"sudo chown ubuntu:ubuntu ${local.target_creds_path}/${var.secret_key_file}",
+			"sudo mv /tmp/${var.private_key_ppk_file} ${local.target_creds_path}",
+			"sudo chown ubuntu:ubuntu ${local.target_creds_path}/${var.private_key_ppk_file}",
+			"sudo chmod 600 ${local.target_creds_path}/${var.private_key_ppk_file}",
+			"sudo mv /tmp/${var.private_key_pem_file} ${local.target_creds_path}",
+			"sudo chown ubuntu:ubuntu ${local.target_creds_path}/${var.private_key_pem_file}",
+			"sudo chmod 600 ${local.target_creds_path}/${var.private_key_pem_file}",
 		]
 
 		connection {
 		  type        = "ssh"
 		  user        = "ubuntu"
-		  private_key = "${file(local.private_key_file)}"
+		  private_key = "${file(local.source_private_key_file_path)}"
 		  host 		  = var.use_public_ip_for_provisioning == true ? "${aws_instance.trilia_ci_linux_mc_native_volume.public_ip}" : "${aws_instance.trilia_ci_linux_mc_native_volume.private_ip}"
 		}
 	
@@ -147,7 +158,7 @@ resource "null_resource" "checkout_tf" {
 	provisioner "remote-exec" {
 		
 		inline = [
-		    "cd /trilia_ci",
+		    "cd ${var.ci_target_base_location}",
 			"git clone https://github.com/trilia/aws_stack.git",
 			"cd aws_stack/prod/compact/kubeprep",
 			"terraform init -input=false",
@@ -158,7 +169,7 @@ resource "null_resource" "checkout_tf" {
 		connection {
 		  type        = "ssh"
 		  user        = "ubuntu"
-		  private_key = "${file(local.private_key_file)}"
+		  private_key = "${file(local.source_private_key_file_path)}"
 		  host 		  = var.use_public_ip_for_provisioning == true ? "${aws_instance.trilia_ci_linux_mc_native_volume.public_ip}" : "${aws_instance.trilia_ci_linux_mc_native_volume.private_ip}"
 		}
 	
