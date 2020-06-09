@@ -18,3 +18,6 @@ variable "db_cluster_node_group_name" {
 	default = "trl_db_cluster_ng_st_config"
 }
 
+variable "db_cluster_unique_role_suffix" {
+	default = "db_st_config"
+}
