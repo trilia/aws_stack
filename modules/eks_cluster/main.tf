@@ -53,7 +53,7 @@ resource "aws_eks_cluster" "this_cluster" {
   depends_on = [
     "aws_iam_role_policy_attachment.trilia-master-AmazonEKSClusterPolicy",
     "aws_iam_role_policy_attachment.trilia-master-AmazonEKSServicePolicy",
-	"aws_cloudwatch_log_group.cluster_log_group"
+    "aws_cloudwatch_log_group.cluster_log_group"
   ]
   
 }
@@ -84,9 +84,9 @@ data "aws_iam_policy_document" "cluster_assume_role_policy" {
   }
 }
 
-resource "aws_iam_role" "example" {
+resource "aws_iam_role" "sample_role" {
   assume_role_policy = "${data.aws_iam_policy_document.cluster_assume_role_policy.json}"
-  name               = "example"
+  name               = "trl_cluster_role"
 }
 
 
@@ -99,9 +99,9 @@ resource "aws_eks_node_group" "cluster_node_group" {
   instance_types  = ["t3.small"]
 
   scaling_config {
-    desired_size = 2
-    max_size     = 4
-    min_size     = 1
+    desired_size = var.cluster_desired_size
+    max_size     = var.cluster_max_size
+    min_size     = var.cluster_min_size
   }
   
   remote_access {
@@ -112,7 +112,7 @@ resource "aws_eks_node_group" "cluster_node_group" {
   tags = "${
     map(
       "kubernetes.io/cluster/${var.cluster_name}", "owned",
-	  "k8s.io/cluster/${var.cluster_name}", "owned",
+      "k8s.io/cluster/${var.cluster_name}", "owned",
     )
   }"
 

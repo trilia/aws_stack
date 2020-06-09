@@ -1,7 +1,7 @@
 // Role for Master node
 resource "aws_iam_role" "eks_master_role" {
 
-  name = "${var.iam_master_role_name}"
+  name = "${var.iam_master_role_name}-${var.unique_role_suffix}"
  
   assume_role_policy = <<POLICY
   {
@@ -32,7 +32,7 @@ resource "aws_iam_role_policy_attachment" "trilia-master-AmazonEKSServicePolicy"
 // Role for worker node
 resource "aws_iam_role" "eks_node_role" {
 
-  name = "${var.iam_node_role_name}"
+  name = "${var.iam_node_role_name}-${var.unique_role_suffix}"
  
   assume_role_policy = <<POLICY
   {
@@ -66,6 +66,6 @@ resource "aws_iam_role_policy_attachment" "trilia-node-AmazonEC2ContainerRegistr
 }
  
 resource "aws_iam_instance_profile" "instance_profile" {
-  name = "${var.instance_profile_name}"
+  name = "${var.instance_profile_name}-${var.unique_role_suffix}"
   role = "${aws_iam_role.eks_node_role.name}"
 }
