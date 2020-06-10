@@ -16,6 +16,7 @@ module "service_vpc" {
 	vpc_sg_name = "${var.svc_vpc_sg_name}"
 	vpc_sg_ingress = "${var.svc_vpc_sg_ingress}"
 	vpc_sg_egress = "${var.svc_vpc_sg_egress}"
+	vpc_subnet_auto_assign_pub_ip = true
 	attach_internet_gateway = true
 
 }
@@ -29,6 +30,7 @@ module "db_vpc" {
 	vpc_sg_name = "${var.db_vpc_sg_name}"
 	vpc_sg_ingress = "${var.db_vpc_sg_ingress}"
 	vpc_sg_egress = "${var.db_vpc_sg_egress}"
+	vpc_subnet_auto_assign_pub_ip = true
 	attach_internet_gateway = true
 }
 
