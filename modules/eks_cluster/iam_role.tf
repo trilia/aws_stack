@@ -4,7 +4,7 @@ resource "aws_iam_role" "eks_master_role" {
   name = "${var.iam_master_role_name}-${var.unique_role_suffix}"
  
   assume_role_policy = <<POLICY
-  {
+{
     "Version": "2012-10-17",
     "Statement": [
       {
@@ -35,7 +35,7 @@ resource "aws_iam_role" "eks_node_role" {
   name = "${var.iam_node_role_name}-${var.unique_role_suffix}"
  
   assume_role_policy = <<POLICY
-  {
+{
     "Version": "2012-10-17",
     "Statement": [
       {

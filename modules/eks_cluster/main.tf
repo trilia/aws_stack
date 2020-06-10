@@ -84,12 +84,6 @@ data "aws_iam_policy_document" "cluster_assume_role_policy" {
   }
 }
 
-resource "aws_iam_role" "sample_role" {
-  assume_role_policy = "${data.aws_iam_policy_document.cluster_assume_role_policy.json}"
-  name               = "trl_cluster_role"
-}
-
-
 resource "aws_eks_node_group" "cluster_node_group" {
 
   cluster_name    = "${aws_eks_cluster.this_cluster.name}"
