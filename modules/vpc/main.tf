@@ -16,6 +16,7 @@ resource "aws_subnet" "vpc_subnet" {
   //cidr_block        = "${var.vpc_subnet_prefix}.${format(count.index * 80)}.0/${var.vpc_subnet_netid_bits}"
   cidr_block = cidrsubnet( "${var.vpc_subnet_prefix}.0.0/${var.vpc_netid_bits}", (var.vpc_subnet_netid_bits - var.vpc_netid_bits), count.index )
   vpc_id            = "${aws_vpc.trl_vpc.id}"
+  map_public_ip_on_launch = "${var.vpc_subnet_auto_assign_pub_ip}"
 
   tags = tomap( { "Name" = "${var.vpc_name}-subnet-${count.index}" } )
   

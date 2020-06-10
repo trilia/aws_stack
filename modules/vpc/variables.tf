@@ -29,6 +29,11 @@ variable "vpc_subnet_netid_bits" {
 	default = 18
 }
 
+variable "vpc_subnet_auto_assign_pub_ip" {
+	type = bool
+	default = false
+}
+
 variable "vpc_sg_name" {
 	default = "trl_vpc_sec_group"
 }
