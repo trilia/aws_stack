@@ -69,7 +69,7 @@ variable "ssh_key_private" {
 }
 
 variable "ci_target_base_location" {
-	default = "/trilila_ci"
+	default = "/trilia_ci"
 }
 
 variable "source_credentials_location" {
