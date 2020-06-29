@@ -72,11 +72,11 @@ variable "admin_2_service_tgwy_name" {
 }
 
 variable "admin_2_db_tgwy_name" {
-	default = "trl_admin_2_svc_tgwy"
+	default = "trl_admin_2_db_tgwy"
 }
 
 variable "service_2_db_tgwy_name" {
-	default = "trl_admin_2_svc_tgwy"
+	default = "trl_service_2_db_tgwy"
 }
 
 variable "service_launcher_instance_name" {
